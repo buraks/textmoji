@@ -11,51 +11,52 @@ my $l = 0;
 my $n = 0;
 my $p = 0;
 
-GetOptions("h|help" => \$h,
-					 "l" => \$l,
-					 "n" => \$n,
-					 "p" => \$p)
-or die("Error in command line arguments\n");
+GetOptions(
+  "h|help" => \$h,
+  "l" => \$l,
+  "n" => \$n,
+  "p" => \$p
+  ) or die("Error in command line arguments\n");
 
 while (<DATA>) {
-	s/\s+/ /go;
-	s/\s$//go;
-	next if /^\s*(#.*)?$/;
-	($keys, $value) = split(" ", $_, 2);
-	foreach $key (split(/,/o, $keys)) {
-		$dict{$key} = $value;
-	}
+  s/\s+/ /go;
+  s/\s$//go;
+  next if /^\s*(#.*)?$/;
+  ($keys, $value) = split(" ", $_, 2);
+  foreach $key (split(/,/o, $keys)) {
+    $dict{$key} = $value;
+  }
 }
 
 if ($l) {
-	foreach $key (sort keys %dict) {
-		printf("%-20s %s\n", $key, $dict{$key});
-	}
-	exit(0);
+  foreach $key (sort keys %dict) {
+    printf("%-20s %s\n", $key, $dict{$key});
+  }
+  exit(0);
 }
 
 if ($h || !@ARGV) {
-	print <<"EOT";
+  print <<"EOT";
 Hello, some manpage stuff goes here!
 EOT
-	exit(0);
+  exit(0);
 }
 
 if ($p) { # -p argument, separate (not -np)
-	close(STDOUT);
-	open(STDOUT, "|pbcopy") || die "$0: open: $!\n";
+  close(STDOUT);
+  open(STDOUT, "|pbcopy") || die "$0: open: $!\n";
 }
 
 if ($n) { # -n argument, see -s switch
-	$sep = "\n";
+  $sep = "\n";
 }
 
 my @destructive_args = @ARGV;
 
 while (@destructive_args) {
-	$key = shift(@destructive_args);
-	print ( $dict{$key} || "#NOTFOUND=$key" );
-	print $sep if (@destructive_args);
+  $key = shift(@destructive_args);
+  print ( $dict{$key} || "#NOTFOUND=$key" );
+  print $sep if (@destructive_args);
 }
 print "\n";
 __END__;
