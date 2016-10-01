@@ -1,10 +1,21 @@
-#!/usr/bin/perl -s
+#!/usr/bin/perl
 # textmoji v1.0
 # buraksimsek32@gmail.com
 # alec.muffett@gmail.com
+use Getopt::Long;
 
 my %dict;
 my $sep = " ";
+my $h = 0;
+my $l = 0;
+my $n = 0;
+my $p = 0;
+
+GetOptions("h|help" => \$h,
+					 "l" => \$l,
+					 "n" => \$n,
+					 "p" => \$p)
+or die("Error in command line arguments\n");
 
 while (<DATA>) {
 	s/\s+/ /go;
