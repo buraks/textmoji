@@ -1,0 +1,62 @@
+#!/usr/bin/perl -s
+# textmoji v1.0
+# buraksimsek32@gmail.com
+# alec.muffett@gmail.com
+
+my %dict;
+my $key = undef;
+my $value = undef;
+my $sep = " ";
+
+while (<DATA>) {
+	s/\s+/ /go;
+	s/\s$//go;
+	next if /^\s*(#.*)?$/;
+	($keys, $value) = split(" ", $_, 2);
+	foreach $key (split(/,/o, $keys)) {
+		$dict{$key} = $value;
+	}
+}
+
+if ($h || !@ARGV) {
+	print <<"EOT";
+Hello, some manpage stuff goes here!
+EOT
+	foreach $key (sort keys %dict) {
+	printf("%-20s %s\n", $key, $dict{$key});
+	}
+	exit(0);
+}
+
+if ($p) { # -p argument, separate (not -np)
+	close(STDOUT);
+	open(STDOUT, "|pbcopy") || die "$0: open: $!\n";
+}
+
+if ($n) { # -n argument, see -s switch
+	$sep = "\n";
+}
+
+my @destructive_args = @ARGV;
+
+while (@destructive_args) {
+	$key = shift(@destructive_args);
+	print ( $dict{$key} || "#NOTFOUND=$key" );
+	print $sep if (@destructive_args);
+}
+print "\n";
+__END__;
+# basic ones
+test1 :-)
+test2,nickname :-(
+
+# extra whitespace will get purged
+test3    %-|   :-P
+
+# real data
+shrug ¯\_(ツ)_/¯
+tf,tableflip (╯°□°）╯︵ ┻━┻
+fixtable ┬─┬﻿ ノ( ゜-゜ノ)
+meh ¯\(°_o)/¯
+cheers （ ^_^）o自自o（^_^ ）
+
