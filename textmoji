@@ -2,7 +2,9 @@
 # textmoji v1.0
 # buraksimsek32@gmail.com
 # alec.muffett@gmail.com
-use Getopt::Long;
+use strict;
+use warnings;
+use Getopt::Long qw(GetOptions);
 
 my %dict;
 my $sep = " ";
@@ -16,20 +18,20 @@ GetOptions(
   "l" => \$l,
   "n" => \$n,
   "p" => \$p
-  ) or die("Error in command line arguments\n");
+) or die("Error in command line arguments\n");
 
 while (<DATA>) {
   s/\s+/ /go;
   s/\s$//go;
   next if /^\s*(#.*)?$/;
-  ($keys, $value) = split(" ", $_, 2);
-  foreach $key (split(/,/o, $keys)) {
+  (my $keys, my $value) = split(" ", $_, 2);
+  foreach my $key (split(/,/o, $keys)) {
     $dict{$key} = $value;
   }
 }
 
 if ($l) {
-  foreach $key (sort keys %dict) {
+  foreach my $key (sort keys %dict) {
     printf("%-20s %s\n", $key, $dict{$key});
   }
   exit(0);
@@ -51,12 +53,12 @@ if ($n) { # -n argument, see -s switch
   $sep = "\n";
 }
 
-my @destructive_args = @ARGV;
-
-while (@destructive_args) {
-  $key = shift(@destructive_args);
-  print ( $dict{$key} || "#NOTFOUND=$key" );
-  print $sep if (@destructive_args);
+my @arguments = @ARGV;
+my $name;
+while (@arguments) {
+  $name = shift(@arguments);
+  print ( $dict{$name} || "#NOTFOUND=$name" );
+  print $sep if (@arguments);
 }
 print "\n";
 __END__;
